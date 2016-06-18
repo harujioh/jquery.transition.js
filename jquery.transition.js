@@ -1,5 +1,5 @@
 /**
- * jQuery Transition v1.0.0 - https://github.com/harujioh
+ * jQuery Transition v1.0.1 - https://github.com/harujioh
  * author : harujioh
  **/
 
@@ -41,9 +41,10 @@ $.fn.extend({
 			var $img = $(this).children();
 
 			// option
-			var opt = $.extend({
+			opt = $.extend({
 				fps : 60,
 				duration : 500,
+				speed : 0,
 				clip : 'linear-left-top',
 				easing : typeof $.easing.swing === 'function' && $.easing.swing.length == 5 ? $.easing.swing : function(x, t, b, c, d){ return.5-Math.cos(x*Math.PI)/2; }
 			}, opt);
@@ -79,21 +80,26 @@ $.fn.extend({
 				if(hoverImageSrc.length > 0){
 					var hoverImage = new Image();
 					hoverImage.onload = function(){
+						var duration = opt.duration;
+						if(opt.speed > 0){
+							duration = canvas.width / opt.speed;
+						}
+
 						$self.hover(function(){
 							clearTimeout(animationTimeout);
-							animation(hodlerPosition, 1);
+							animation(hodlerPosition, 1, duration);
 						}, function(){
 							clearTimeout(animationTimeout);
-							animation(hodlerPosition, -1);
+							animation(hodlerPosition, -1, duration);
 						});
 					}
 					hoverImage.src = hoverImageSrc;
 				}
 
 				// animation method
-				function animation(position, sign){
-					var rangePosition = Math.max(0, Math.min(opt.duration, position));
-					var easingRate = opt.easing(rangePosition / opt.duration, rangePosition, 0, 1, opt.duration);
+				function animation(position, sign, duration){
+					var rangePosition = Math.max(0, Math.min(duration, position));
+					var easingRate = opt.easing(rangePosition / duration, rangePosition, 0, 1, duration);
 
 					ctx.clearRect(0, 0, width, height);
 					ctx.drawImage(backgroundImage, 0, 0);
@@ -107,13 +113,13 @@ $.fn.extend({
 
 					if(position < 0){
 						position = 0;
-					}else if(position > opt.duration){
-						position = opt.duration;
+					}else if(position > duration){
+						position = duration;
 					}else{
 						var delay = 1000 / opt.fps;
 						hodlerPosition = position;
 						animationTimeout = setTimeout(function(){
-							animation(position + delay * sign, sign);
+							animation(position + delay * sign, sign, duration);
 						}, delay);
 					}
 				};
@@ -129,9 +135,10 @@ $.fn.extend({
 			var $img = $(this).children();
 
 			// option
-			var opt = $.extend({
+			opt = $.extend({
 				fps : 60,
 				duration : 500,
+				speed : 0,
 				easing : typeof $.easing.swing === 'function' && $.easing.swing.length == 5 ? $.easing.swing : function(x, t, b, c, d){ return.5-Math.cos(x*Math.PI)/2; }
 			}, opt);
 
@@ -167,12 +174,16 @@ $.fn.extend({
 				$img.remove();
 
 				// load hover image
-				animation(hodlerPosition, 1);
+				var duration = opt.duration;
+				if(opt.speed > 0){
+					duration = canvas.width * opt.speed;
+				}
+				animation(hodlerPosition, 1, duration);
 
 				// animation method
-				function animation(position, sign){
-					var rangePosition = Math.max(0, Math.min(opt.duration, position));
-					var easingRate = opt.easing(rangePosition / opt.duration, rangePosition, 0, 1, opt.duration);
+				function animation(position, sign, duration){
+					var rangePosition = Math.max(0, Math.min(duration, position));
+					var easingRate = opt.easing(rangePosition / duration, rangePosition, 0, 1, duration);
 
 					ctx.clearRect(0, 0, width, height);
 					ctx.save();
@@ -185,8 +196,8 @@ $.fn.extend({
 
 					if(position < 0){
 						position = 0;
-					}else if(position > opt.duration){
-						position = opt.duration;
+					}else if(position > duration){
+						position = duration;
 
 						if(typeof callback === 'function'){
 							callback.apply($self, []);
@@ -195,7 +206,7 @@ $.fn.extend({
 						var delay = 1000 / opt.fps;
 						hodlerPosition = position;
 						animationTimeout = setTimeout(function(){
-							animation(position + delay * sign, sign);
+							animation(position + delay * sign, sign, duration);
 						}, delay);
 					}
 				}
