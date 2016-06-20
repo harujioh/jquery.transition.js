@@ -58,11 +58,17 @@ $.fn.extend({
 				return this;
 			}
 
+			if($img[0].complete){
+				setTransition();
+			}else{
+				$img.bind('load', setTransition);
+			}
+
 			// get <img> size
-			$img.bind('load', function(){
-				var backgroundImage = $(this)[0];
-				var width = $(this).width();
-				var height = $(this).height();
+			function setTransition(){
+				var backgroundImage = $img[0];
+				var width = $img.width();
+				var height = $img.height();
 
 				// create <canvas>
 				var canvas = document.createElement('canvas');
@@ -73,7 +79,7 @@ $.fn.extend({
 				var ctx = canvas.getContext('2d');
 				ctx.drawImage(backgroundImage, 0, 0);
 				$self.append(canvas);
-				$(this).remove();
+				$img.remove();
 
 				// load hover image
 				var hoverImageSrc = $self.data('hoverImage') || '';
@@ -123,7 +129,7 @@ $.fn.extend({
 						}, delay);
 					}
 				};
-			});
+			}
 		});
 
 		return this;
