@@ -1,21 +1,7 @@
 /**
- * jQuery Transition v1.0.1 - https://github.com/harujioh
+ * jQuery Transition v1.0.2 - https://github.com/harujioh
  * author : harujioh
  **/
-
-// initialize
-(function(){
-	var head = document.getElementsByTagName('head').item(0);
-	var style = document.createElement('style');
-	style.type = "text/css";
-	head.appendChild(style);
-
-	for(var i = 0, l = document.styleSheets.length; i < l; i++){
-		if(style.sheet === document.styleSheets[i]){
-			document.styleSheets[i].insertRule('.transition > img { opacity: 0; }', 0);
-		}
-	}
-})();
 
 $.extend({
 	clipShape : function(ctx, type, width, height, rate){
@@ -67,8 +53,8 @@ $.fn.extend({
 			// get <img> size
 			function setTransition(){
 				var backgroundImage = $img[0];
-				var width = $img.width();
-				var height = $img.height();
+				var width = backgroundImage.width;
+				var height = backgroundImage.height;
 
 				// create <canvas>
 				var canvas = document.createElement('canvas');
@@ -166,8 +152,8 @@ $.fn.extend({
 
 			function startTransitionIn(){
 				var hoverImage = $img[0];
-				var width = $img.width();
-				var height = $img.height();
+				var width = hoverImage.width;
+				var height = hoverImage.height;
 
 				// create <canvas>
 				var canvas = document.createElement('canvas');
